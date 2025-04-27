@@ -1,1 +1,2 @@
-# Network Programming
+в папці - "00_Homework"
+знаходятсья Домашні завдання
