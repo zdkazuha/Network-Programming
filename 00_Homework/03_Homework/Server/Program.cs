@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using Server;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Xml.Serialization;
@@ -8,10 +9,11 @@ public class ChatServer
     const int port = 4040;
 
     TcpListener server;
-
+    DictionaryChat dictionary;
     public ChatServer()
     {
         server = new TcpListener(new IPEndPoint(IPAddress.Parse("127.0.0.1"), port));
+        dictionary = new DictionaryChat();
     }
 
     public void Start()
@@ -38,9 +40,10 @@ public class ChatServer
                 break;
             }
 
+            string response = dictionary.GetResponse(message);
             Console.WriteLine($"{DateTime.Now.ToLongTimeString()} -- {message} from -- {client.Client.LocalEndPoint}");
 
-            sw.WriteLine(message);
+            sw.WriteLine(response);
             sw.Flush();
         }
     }
