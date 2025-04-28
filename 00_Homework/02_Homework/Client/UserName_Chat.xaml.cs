@@ -32,6 +32,7 @@ namespace Client
             if (string.IsNullOrWhiteSpace(UserName))
             {
                 MessageBox.Show("Будь ласка введіть свій нікнейм!");
+                return;
             }
             MainWindow mainWindow = new MainWindow(UserName);
             this.Close();

@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.IO.MemoryMappedFiles;
+using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Xml.Serialization;
@@ -22,28 +23,40 @@ public class ChatServer
     {
         if(!members.Contains(member))
             members.Add(member);
+
         Console.WriteLine($"Member was added ---- {members.Count}");
     }
-    private async void SendAllMember(string userName,string message)
+    private async void SendAllMember(string userName, string message)
     {
-        byte[] data_UserName = Encoding.Unicode.GetBytes(userName);
-        byte[] data_Message = Encoding.Unicode.GetBytes(message);
+        string fullMessage = $"{userName}:{message}";
+        byte[] data = Encoding.Unicode.GetBytes(fullMessage);
+
         foreach (var item in members)
         {
-            await server.SendAsync(data_UserName, data_UserName.Length, item);
-            await server.SendAsync(data_Message, data_Message.Length, item);
+            await server.SendAsync(data, data.Length, item);
         }
     }
+
 
     public void Start()
     {
         while (true)
         {
-            byte[] data_UserName = server.Receive(ref client);
-            string userName = Encoding.Unicode.GetString(data_UserName);
+            byte[] data = server.Receive(ref client);
+            string fullMessage = Encoding.Unicode.GetString(data);
 
-            byte[] data_Message = server.Receive(ref client);
-            string message = Encoding.Unicode.GetString(data_Message);
+            int Index = fullMessage.IndexOf(':');
+            if (Index == -1)
+                continue;
+
+            var parts = fullMessage.Split(':', 2);
+            if (parts.Length != 2)
+            {
+                return;
+            }
+
+            string userName = parts[0];
+            string message = parts[1];
 
             switch (message)
             {
@@ -56,6 +69,9 @@ public class ChatServer
                     break;
                 default:
                     Console.WriteLine($"{DateTime.Now.ToLongTimeString()} {userName} :: {message} from -- {client}");
+                    if (!members.Contains(client))
+                        break;
+
                     SendAllMember(userName,message);
                     break;
             }

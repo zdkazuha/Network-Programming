@@ -22,19 +22,19 @@
                    Margin="10"
                    >Message :</Label>
             <Button 
-                Click="LeaveBtn"
+                Click="DisconnectedBtn"
                 DockPanel.Dock="Right" 
                 Foreground="Red"
                 BorderBrush="Red" 
                 Background="Transparent"
-                >Leave</Button>
+                >Disconnected</Button>
             <Button 
-                    Click="JoinBtn"
+                    Click="ConnectedBtn"
                     DockPanel.Dock="Right" 
                     Foreground="Green"
                     BorderBrush="Green"
                     Background="Transparent"
-                    >Join</Button>
+                    >Connected</Button>
             <Button DockPanel.Dock="Right"
                     Click="SendBtn"
                     >Send</Button>
@@ -53,12 +53,12 @@
             HorizontalAlignment="Center"
             
             >Chat</TextBlock>
-        <Button Click="ClearBtn" DockPanel.Dock="Bottom">Clear</Button>
-        <ListBox Name="Chat" ItemsSource="{Binding}" HorizontalContentAlignment="Stretch"  >
+        <Button DockPanel.Dock="Bottom">Clear</Button>
+        <ListBox ItemsSource="{Binding}" HorizontalContentAlignment="Stretch"  >
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <DockPanel>
-                        <Label DockPanel.Dock="Left" Content="{Binding UserName}"></Label>
+                        <Label DockPanel.Dock="Left" >Name</Label>
                         <Label DockPanel.Dock="Right" Content="{Binding Time}"></Label>
                         <TextBlock TextWrapping="WrapWithOverflow" VerticalAlignment="Center" DockPanel.Dock="Left" Text="{Binding Message}" ></TextBlock>
                     </DockPanel>

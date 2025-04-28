@@ -1,0 +1,115 @@
+﻿<Window x:Class="_03_Homework.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:_03_Homework"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="510" Width="460">
+    <Grid>
+        <Label 
+            Width="40" 
+            Height="35" 
+            Margin="5" 
+            VerticalAlignment="Top" 
+            HorizontalAlignment="Left" 
+            FontSize="20" 
+            BorderBrush="Black"
+            Content="IP:" 
+            />
+        <TextBox
+            Name="IPAddressTextBox"
+            Width="200"
+            Height="20"
+            Margin="40,15,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            BorderBrush="Black"
+            Text="127.0.0.1"
+            FontSize="16"
+            ></TextBox>
+
+        <Label 
+            Width="50" 
+            Height="35" 
+            Margin="260,5,0,0" 
+            VerticalAlignment="Top" 
+            HorizontalAlignment="Left" 
+            FontSize="20" 
+            BorderBrush="Black"
+            Content="Port:" 
+            />
+        <TextBox
+            Name="PortTextBox"
+            Width="100"
+            Height="20"
+            Margin="320,15,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            BorderBrush="Black"
+            Text="4040"
+            FontSize="16"
+            ></TextBox>
+
+        <TextBox 
+            FontSize="17"
+            Name="MessageTextBox"
+            Width="350" 
+            Height="25" 
+            Margin="10,50,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            BorderBrush="Black" 
+            KeyDown="MessageTextBoxEnter"
+            ></TextBox>
+        <Button
+            Click="SendBtn"
+            Width="70" 
+            Height="25"
+            Margin="0,50,5,0"
+            Content="Send"
+            FontSize="19"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Background="#b5e61d"
+            BorderBrush="Black"
+            
+            ></Button>
+
+        <Label 
+            Width="100" 
+            Height="45" 
+            Margin="10,80,0,0"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            FontSize="20"
+            BorderBrush="Black"
+            Content="Messages:" 
+            />
+        <ListBox ItemsSource="{Binding}" Name="Chat" Width="435" Height="320" Margin="4,75,5,0" BorderBrush="Black" >
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <DockPanel>
+                        <Label FontSize="15" DockPanel.Dock="Right"  Content="{Binding Time}"/>
+                        <TextBlock TextWrapping="WrapWithOverflow" FontSize="15" DockPanel.Dock="Left" Width="364" Text="{Binding Message}" ></TextBlock>
+                    </DockPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+
+        <Button
+            Click="CloseChat"
+            Width="435" 
+            Height="25"
+            Margin="4,0,5,5"
+            Content="Close Chat"
+            FontSize="19"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Bottom"
+            Background="Red"
+            BorderBrush="Black"
+            FontWeight="Bold"
+            ></Button>
+    </Grid>
+</Window>

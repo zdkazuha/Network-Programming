@@ -58,33 +58,44 @@ namespace Client
 
         private async void SendMessage(string message)
         {
-            byte[] data_UserName = Encoding.Unicode.GetBytes(UserName);
-            await client.SendAsync(data_UserName, data_UserName.Length, server);
-
-            byte[] data_Message = Encoding.Unicode.GetBytes(message);
-            await client.SendAsync(data_Message, data_Message.Length, server);
+            string fullMessage = $"{UserName}:{message}";
+            byte[] data = Encoding.Unicode.GetBytes(fullMessage);
+            await client.SendAsync(data, data.Length, server);
         }
-        private async void Listener()
+
+        private async void Listener(bool isListening)
         {
-            while(true)
+            while (isListening)
             {
-                var data_UserName = await client.ReceiveAsync();
-                string userName_chat = Encoding.Unicode.GetString(data_UserName.Buffer);
+                var data = await client.ReceiveAsync();
+                string fullMessage = Encoding.Unicode.GetString(data.Buffer);
 
-                var data_Message = await client.ReceiveAsync();
-                string message = Encoding.Unicode.GetString(data_Message.Buffer);
+                int Index = fullMessage.IndexOf(':');
+                if (Index == -1)
+                    continue;
 
-                messages.Add(new MessageInfo((userName_chat + " :: "),message));
+                string userName_chat = fullMessage.Substring(0, Index);
+                string message = fullMessage.Substring(Index + 1);
+
+                messages.Add(new MessageInfo((userName_chat + " :: "), message));
             }
         }
+
         private void JoinBtn(object sender, RoutedEventArgs e)
         {
             SendMessage("$<join>");
-            Listener();
+            Listener(true);
         }
         private void LeaveBtn(object sender, RoutedEventArgs e)
         {
             SendMessage("$<leave>");
+            ClearBtn(sender, e);
+            Listener(false);
+        }
+
+        private void ClearBtn(object sender, RoutedEventArgs e)
+        {
+            messages.Clear();
         }
     }
 
