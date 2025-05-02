@@ -47,7 +47,6 @@ namespace Client
 
             SendMessage(message);
         }
-
         private void msgTextBoxEnter(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -55,14 +54,12 @@ namespace Client
                 SendBtn(sender, e);
             }
         }
-
         private async void SendMessage(string message)
         {
             string fullMessage = $"{UserName}:{message}";
             byte[] data = Encoding.Unicode.GetBytes(fullMessage);
             await client.SendAsync(data, data.Length, server);
         }
-
         private async void Listener(bool isListening)
         {
             while (isListening)
@@ -80,7 +77,6 @@ namespace Client
                 messages.Add(new MessageInfo((userName_chat + " :: "), message));
             }
         }
-
         private void JoinBtn(object sender, RoutedEventArgs e)
         {
             SendMessage("$<join>");
@@ -92,7 +88,6 @@ namespace Client
             ClearBtn(sender, e);
             Listener(false);
         }
-
         private void ClearBtn(object sender, RoutedEventArgs e)
         {
             messages.Clear();

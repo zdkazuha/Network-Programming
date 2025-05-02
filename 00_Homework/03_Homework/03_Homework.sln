@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.13.35919.96 d17.13
+VisualStudioVersion = 17.13.35919.96
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "03_Homework", "03_Homework\03_Homework.csproj", "{9623BC5D-E4E6-42F7-ACFA-7CA06C5A2ADE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "03_Homework\Client.csproj", "{9623BC5D-E4E6-42F7-ACFA-7CA06C5A2ADE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{AFC7105E-E46F-4B6B-B479-FF5A417CC671}"
 EndProject
