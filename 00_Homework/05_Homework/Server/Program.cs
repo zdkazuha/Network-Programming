@@ -11,13 +11,14 @@ internal class Program
     public static StreamReader sr;
     private static async Task Start(TcpClient client)
     {
-        Console.WriteLine("Connected!!!");
 
         if (tcpClients.Count() == 2)
         {
             tcpClients.Remove(client);
             return;
         }
+
+        Console.WriteLine("Connected!!!");
 
         try
         {
@@ -113,12 +114,12 @@ internal class Program
 
                 if(tcpClients.Count() < 2)
                 {
-                    streamWriter.WriteLine("Сервер: Вітаємо на сервері!");
+                    streamWriter.WriteLine("Сервер:Вітаємо на сервері!");
                     streamWriter.Flush();
                 }
                 else
                 {
-                    streamWriter.WriteLine("Сервер: Сервер переповнений!");
+                    streamWriter.WriteLine("Сервер:Сервер переповнений!");
                     streamWriter.Flush();
                 }
                 Task.Run(() => Start(client));

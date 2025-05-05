@@ -49,6 +49,12 @@ namespace Client
             this.Close();
             mainWindow.Show();
         }
+
+        private void userName_(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Enter)
+                Login(sender, e);
+        }
     }
 }
 

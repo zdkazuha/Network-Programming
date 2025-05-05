@@ -122,7 +122,13 @@ namespace Client
                         string userName = parts[0];
                         string message = parts[1];
 
+
                         messages.Add(new MessageInfo((userName + " :: "), message));
+
+                        if (userName == "Сервер" && message == "Сервер переповнений!")
+                        {
+                            sw = null;
+                        }
                     }
                 }
                 catch (Exception ex)

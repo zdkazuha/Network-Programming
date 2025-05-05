@@ -8,7 +8,7 @@
         Title="UserName_Chat" Height="150" Width="350">
     <Grid>
         <Label Content="Введіть і'мя користувача :: " Margin="5,5,0,10" FontSize="20" ></Label>
-        <TextBox Name="userName" Width="240" Height="30" HorizontalAlignment="Left" FontSize="17" VerticalContentAlignment="Center" Margin="10"></TextBox>
+        <TextBox Name="userName" Width="240" Height="30" HorizontalAlignment="Left" FontSize="17" VerticalContentAlignment="Center" Margin="10" KeyDown="userName_"></TextBox>
         <Button Click="Login" FontSize="20" Content="Увійти" Width="70" Height="30"   HorizontalAlignment="Right" Margin="10"></Button>
     </Grid>
 </Window>
