@@ -74,9 +74,7 @@ namespace Smtp_sebdMessage
         }
         private void SebdMessageCompleted(object sender, AsyncCompletedEventArgs e)
         {
-            //var state = (MailMessage)e.UserState!;
             MessageBox.Show("Повідомлення відправлено");
-            //MessageBox.Show(state.Subject);
         }
         string GetRichText(RichTextBox richTextBox)
         {
