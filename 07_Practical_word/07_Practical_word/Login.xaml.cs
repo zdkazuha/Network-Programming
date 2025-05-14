@@ -13,7 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-namespace Smtp_sebdMessage
+namespace _07_Practical_word
 {
     /// <summary>
     /// Interaction logic for Login.xaml
@@ -25,6 +25,8 @@ namespace Smtp_sebdMessage
         public Login()
         {
             InitializeComponent();
+            this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+
             UserName.Text = "aartemchelyk@gmail.com";
             Password.Text = "zlsu ftiw ttlr mjoi ";
         }
@@ -39,8 +41,8 @@ namespace Smtp_sebdMessage
             username = UserName.Text;
             password = Password.Text;
 
-            MainWindow mainWindow = new MainWindow(username, password);
-            mainWindow.Show();
+            MainWindow messageWindow = new MainWindow(username, password);
+            messageWindow.Show();
             this.Close();
         }
     }

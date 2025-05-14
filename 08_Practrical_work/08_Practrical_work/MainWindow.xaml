@@ -5,25 +5,31 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:_08_Practrical_work"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="820">
     <Grid>
-        <Label Width="200" Height="35" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10 10 0 0">Введіть url:</Label>
-        <TextBox Name="UrlFile" Width="400" Height="35" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="120 10 0 0"></TextBox>
+        <Label Width="200" Height="35" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="10,10,0,0">Введіть URL:</Label>
 
-        <Button Click="Browse" Width="100" Height="35" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="530 10 0 0">Browse</Button>
-        <Button Click="Download" Width="100" Height="35" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="650 10 0 0">Download</Button>
+        <TextBox Name="UrlFile" Width="400" Height="35" FontSize="15" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="120,10,0,0" VerticalContentAlignment="Center" HorizontalContentAlignment="Left" 
+                 IsReadOnlyCaretVisible="True" />
 
-        <ListBox ItemsSource="{Binding Files}" Name="FileInfoListBox"  Width="735" Height="400" Margin="15 50 0 0" HorizontalAlignment="Left">
+        <Button Click="Browse" Width="100" Height="35" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="530,10,0,0">Browse</Button>
+
+        <Button Click="Download" Width="100" Height="35" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="650,10,0,0">Download</Button>
+
+        <ListBox ItemsSource="{Binding Files}" Name="FileInfoListBox" Width="735" Height="350" Margin="-25,40,15,0" HorizontalAlignment="Stretch">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
-                        <Label Content="{Binding FileName}" FontSize="16" Margin="5 0"></Label>
-                        <ProgressBar Width="400" Value="{Binding Percent}" Minimum="0" Maximum="100" Height="20" Margin="5 0"></ProgressBar>
-                        <Label Content="{Binding Completed}" FontSize="16" Margin="5 0"></Label>
+                    <StackPanel Orientation="Horizontal" Margin="0,5">
+                        <Label Content="{Binding FileName}" MouseDoubleClick="Label_MouseDoubleClick" FontSize="16" Width="120" Margin="5,0"/>
+                        <ProgressBar Width="200" Height="20" Value="{Binding Percent}" Minimum="0" Maximum="100" Margin="5,0"/>
+
+                        <Label Content="{Binding PercentText}" Width="70" FontSize="16" HorizontalContentAlignment="Center" Margin="5 0 "/>
+                        <Label Content="{Binding SizeFile}" Width="80" FontSize="16" Margin="5,0"/>
+                        <Label Content="{Binding Completed}" Width="125" FontSize="16" Margin="5,0"/>
+                        <Button Content="Stop" Width="90" Height="25" Click="StopDownload" Margin="-15,0"/>
                     </StackPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        
     </Grid>
 </Window>
