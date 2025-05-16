@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Final_Project_Network_Programming"
         mc:Ignorable="d"
-        Title="ConfirmationGroup" Height="150" Width="310">
+        Title="ConfirmationGroup" Height="200" Width="310">
     <Grid>
         <Label 
             Width="295" 
@@ -15,26 +15,44 @@
             VerticalAlignment="Top" 
             HorizontalAlignment="Left" 
             >Ви хочете приєднатисья до групи?</Label>
-        <Label Name="UserName"
+        
+        <Label 
                Width="155" 
                Height="35" 
                Margin="5 50 0 0" 
                FontSize="18" 
                VerticalAlignment="Top" 
                HorizontalAlignment="Left" 
-               Content="UserName"
+               Content="Вас приглашає :: "
                ></Label>
-        <Label Name="GropName" 
+        <Label Name="UserNameLabel"
                Width="155" 
                Height="35" 
-               Margin="150 50 15 0" 
+               Margin="145 50 0 0" 
                FontSize="18" 
                VerticalAlignment="Top" 
-               HorizontalAlignment="Right"
-               HorizontalContentAlignment="Right"
-               Content="GroupName"
+               HorizontalAlignment="Left" 
+               Content="UserName"
                ></Label>
-        <Label Content=":---------:" HorizontalAlignment="Center" VerticalAlignment="Center" 
+        <Label
+               Width="155" 
+               Height="35" 
+               Margin="5 80 15 0" 
+               FontSize="18" 
+               VerticalAlignment="Top" 
+               HorizontalAlignment="Left"
+               HorizontalContentAlignment="Left"
+               Content="В групу :: "
+               ></Label>
+        <Label Name="GroupNameLabel" 
+               Width="155" 
+               Height="35" 
+               Margin="145 80 15 0" 
+               FontSize="18" 
+               VerticalAlignment="Top" 
+               HorizontalAlignment="Left"
+               HorizontalContentAlignment="Left"
+               Content="GroupName"
                ></Label>
 
         <Button
@@ -52,7 +70,7 @@
             Click="NoBtn"
             Width="100"
             Height="30"
-            Margin="11 0 10 10"
+            Margin="10 0 10 10"
             FontSize="20"
             HorizontalAlignment="Left"
             VerticalAlignment="Bottom"

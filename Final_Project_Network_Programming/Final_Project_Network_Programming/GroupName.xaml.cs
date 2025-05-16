@@ -1,4 +1,4 @@
-﻿using Db_Controller;
+﻿using DbController;
 using Db_Controller.Entities;
 using System;
 using System.Collections.Generic;
@@ -56,8 +56,7 @@ namespace Final_Project_Network_Programming
             {
                 User = UserRename;
                 context.SaveChanges();
-                MessageBox.Show($"Користувач {User.Username} приєднався до групи {User.Group.Name}");
-               
+                
                 ResultUser = User;
                 this.Close();
             }

@@ -13,6 +13,7 @@ namespace Db_Controller.Entities
         public int Id { get; set; }
         public int UserId { get; set; }
         public int ContactUserId { get; set; }
+        public string Name { get; set; }
         public string CustomName { get; set; }
 
         // Navigation properties

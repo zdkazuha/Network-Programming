@@ -1,9 +1,11 @@
-﻿using Db_Controller;
+﻿using DbController;
+using Db_Controller.Entities;
 using System;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 
 namespace Final_Project_Network_Programming
 {
@@ -11,15 +13,17 @@ namespace Final_Project_Network_Programming
     {
         private Db_functional context = new Db_functional();
         private StreamWriter sw;
-        private string UserName;
+        private User User;
 
-        public InviteToPrivateChat(StreamWriter sw_, string username)
+        public InviteToPrivateChat(StreamWriter sw_, User user)
         {
             InitializeComponent();
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
-            UserName = username;
+            User = user;
             sw = sw_;
+
+            ResultUser = null;
         }
 
         private async void InviteBtn(object sender, RoutedEventArgs e)
@@ -33,8 +37,8 @@ namespace Final_Project_Network_Programming
             string username = usernameBox.Text;
             string chatName = chatNameBox.Text;
 
-            var user = context.GetUser(username);
-            if (user != null)
+            var user_1 = context.GetUser(username);
+            if (user_1 != null)
             {
                 if (sw == null)
                 {
@@ -42,9 +46,35 @@ namespace Final_Project_Network_Programming
                     return;
                 }
 
+                if (user_1.Username == User.Username)
+                {
+                    MessageBox.Show("Ви не можете запросити себе в чат.");
+                    return;
+                }
+
                 try
                 {
-                    string message = $"{UserName}:Invite:{chatName}:{username}";
+                    Group group = context.GetPrivateChat(chatName);
+                    if (group == null)
+                    {
+                        MessageBox.Show("Вказаної групи не існує.");
+                        return;
+                    }
+
+                    var inviter = context.GetUser(User.Username);
+                    if (inviter != null)
+                    {
+                        inviter = context.RenameUserGroup(inviter, group);
+                        context.SaveChanges();
+                    }
+
+
+                    user_1 = inviter;
+                    context.SaveChanges();
+
+                    ResultUser = user_1;
+
+                    string message = $"{User.Username}:Invite:{username}:{group.Name}:{group.Id}";
                     await sw.WriteLineAsync(message);
                     await sw.FlushAsync();
 
@@ -57,10 +87,8 @@ namespace Final_Project_Network_Programming
                 }
             }
             else
-            {
                 MessageBox.Show("Користувача з таким іменем не існує");
-            }
         }
-
+        public User ResultUser { get; private set; }
     }
 }

@@ -1,5 +1,5 @@
-﻿using Db_Controller.Entities;
-
+﻿using DbController;
+using Db_Controller.Entities;
 using Microsoft.Win32;
 using PropertyChanged;
 using System.Collections.ObjectModel;
@@ -10,11 +10,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.IO;
 using System.Configuration;
-using Db_Controller.Entities;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Diagnostics;
-using Db_Controller;
 
 namespace Final_Project_Network_Programming
 {
@@ -24,7 +22,6 @@ namespace Final_Project_Network_Programming
         public ObservableCollection<MessageInfo> Messages { get; set; } = new ObservableCollection<MessageInfo>();
 
         public static Db_functional context = new Db_functional();
-
         IPEndPoint server;
         TcpClient client;
         NetworkStream ns = null;
@@ -41,7 +38,7 @@ namespace Final_Project_Network_Programming
 
         public MainWindow(User user)
         {
-            InitializeComponent(); 
+            InitializeComponent();
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
             User = user;
@@ -72,19 +69,41 @@ namespace Final_Project_Network_Programming
             GroupName groupName = new GroupName(User);
             groupName.ShowDialog();
 
-            if(groupName.ResultUser != null)
+            if (groupName.ResultUser != null)
             {
                 User = groupName.ResultUser;
                 UserName = User.Username;
-                MessageBox.Show($"Вітаємо {User.Username} у групі {User.Group.Name}");
+
+                if (context == null)
+                {
+                    MessageBox.Show("Не вдалося підключитися до бази даних.");
+                    return;
+                }
+
                 context.SaveChanges();
             }
-            //LeaveConnection();
+
             try
             {
-                client = new TcpClient();
+                if (client == null)
+                {
+                    client = new TcpClient();
+                }
+
+                if (server == null)
+                {
+                    MessageBox.Show("Сервер не ініціалізовано.");
+                    return;
+                }
+
                 client.Connect(server);
                 ns = client.GetStream();
+
+                if (ns == null)
+                {
+                    MessageBox.Show("Не вдалося створити мережевий потік.");
+                    return;
+                }
 
                 sw = new StreamWriter(ns);
                 sr = new StreamReader(ns);
@@ -94,7 +113,24 @@ namespace Final_Project_Network_Programming
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show("Помилка при з'єднанні: " + ex.Message);
+                return;
+            }
+
+            try
+            {
+                if (sw == null)
+                {
+                    MessageBox.Show("StreamWriter не ініціалізовано.");
+                    return;
+                }
+
+                await sw.WriteLineAsync($"{User.Username}:Hello server:");
+                await sw.FlushAsync();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Помилка при надсиланні: " + ex.Message);
             }
         }
         private void LeaveBtn(object sender, RoutedEventArgs e)
@@ -151,20 +187,36 @@ namespace Final_Project_Network_Programming
                             }
 
                             if (fullMessage.Contains(":Invite:"))
-                            {
-                                var parts1 = fullMessage.Split(':', 4);
-                                if (parts1.Length == 4)
+                            {                                
+                                var parts1 = fullMessage.Split(':', 5);
+                                if (parts1.Length == 5)
                                 {
                                     string senderName = parts1[0];
                                     string command = parts1[1];
                                     string UserName = parts1[2];
                                     string ChatName = parts1[3];
-                                    int    ChatId = int.Parse(parts1[4]);
+                                    int ChatId = int.Parse(parts1[4]);
 
-                                    ConfirmationGroup configuration = new ConfirmationGroup(User,ChatName);
-                                    configuration.ShowDialog();
+                                    Application.Current.Dispatcher.Invoke(() =>
+                                    {
+                                        ConfirmationGroup configuration = new ConfirmationGroup(senderName, User, ChatName, ChatId);
+                                        configuration.ShowDialog();
+
+                                        if (configuration.ResultUser != null)
+                                        {
+                                            context.AddUserToGroup(User, ChatName);
+                                            context.SaveChanges();
+                                            MessageBox.Show($"Вітаємо {User.Username} у групі {ChatName}");
+                                        }
+                                        else
+                                            MessageBox.Show("Запрошення відхилено.");
+                                    });
+
+                                    continue;
                                 }
-                                continue;
+                                else
+                                    MessageBox.Show("Формат запрошення некоректний: очікувалося 5 частин.");
+
                             }
 
                             int index = fullMessage.IndexOf(':');
@@ -224,7 +276,7 @@ namespace Final_Project_Network_Programming
             await ns.WriteAsync(fileBytes, 0, fileBytes.Length);
             await ns.FlushAsync();
 
-            MessageBox.Show("Файл успішно передано.");
+            //MessageBox.Show("Файл успішно відправлено.");
 
             Files.Clear();
         }
@@ -238,7 +290,7 @@ namespace Final_Project_Network_Programming
                 while (totalRead < length)
                 {
                     int read = await ns.ReadAsync(buffer, totalRead, length - totalRead);
-                    if (read == 0) 
+                    if (read == 0)
                         break;
                     totalRead += read;
                 }
@@ -283,8 +335,35 @@ namespace Final_Project_Network_Programming
         }
         private void InviteToPrivateGroupBtn(object sender, RoutedEventArgs e)
         {
-            InviteToPrivateChat inviteToPrivateChat = new InviteToPrivateChat(sw,UserName);
+            InviteToPrivateChat inviteToPrivateChat = new InviteToPrivateChat(sw, User);
             inviteToPrivateChat.ShowDialog();
+
+            if (inviteToPrivateChat.ResultUser != null)
+            {
+                context.AddUserToGroup(User, inviteToPrivateChat.ResultUser.Group.Name);
+                context.SaveChanges();
+
+                MessageBox.Show($"Вітаємо {User.Username} у групі {inviteToPrivateChat.ResultUser.Group.Name}");
+            }
+            else
+                MessageBox.Show("Вас не вийшло підєднати");
+        }
+        private void ClearBtn(object sender, RoutedEventArgs e)
+        {
+            Messages.Clear();
+            Files.Clear();
+        }
+        private void msgTextBoxEnter(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                SendBtn(sender, e);
+            }
+        }
+        private void OpenContactsBtn(object sender, RoutedEventArgs e)
+        {
+            ContactWindow contactWindow = new ContactWindow(User);
+            contactWindow.Show();
         }
     }
 

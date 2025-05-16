@@ -5,11 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Final_Project_Network_Programming"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="470" Width="800">
     <Grid>
 
         <Label Width="110" Height="35" Margin="5 75 0 0" FontSize="19" HorizontalAlignment="Left" VerticalAlignment="Top" FontWeight="Bold">Message :: </Label>
-        <TextBox Name="msgTextBox" Width="375" Height="30" Margin="110 75 0 0" FontSize="18" VerticalContentAlignment="Bottom" VerticalAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left"></TextBox>
+        <TextBox Name="msgTextBox" Width="375" Height="30" Margin="110 75 0 0" FontSize="18" VerticalContentAlignment="Bottom" VerticalAlignment="Top" HorizontalContentAlignment="Left" HorizontalAlignment="Left" KeyDown="msgTextBoxEnter"></TextBox>
 
         <ListBox Name="FilesListBox" Width="200" Height="65" ItemsSource="{Binding Files}" Margin="0 5 10 0" HorizontalAlignment="Right" VerticalAlignment="Top">
             <ListBox.ItemTemplate>
@@ -53,11 +53,21 @@
                 Background="Green"
                 Foreground="White"
                 ></Button>
+        <Button Content="Open Contacts" 
+                Click="OpenContactsBtn" 
+                Width="150" 
+                Height="30" 
+                Margin="110 5 0 0" 
+                FontSize="20" 
+                HorizontalAlignment="Left" 
+                VerticalAlignment="Top" 
+                Background="yellow"
+                ></Button>
         <Button Content="Invite to Private Group" 
                 Click="InviteToPrivateGroupBtn" 
-                Width="220" 
+                Width="210" 
                 Height="30" 
-                Margin="10 5 0 0" 
+                Margin="270 5 0 0" 
                 FontSize="20" 
                 HorizontalAlignment="Left" 
                 VerticalAlignment="Top" 
@@ -76,8 +86,8 @@
                 Foreground="White"
                 ></Button>
 
-        <Label Width="110" Height="40" Margin="0 120 0 0" FontSize="25" HorizontalAlignment="Center"  VerticalAlignment="Top" FontWeight="Bold">Chat</Label>
-        <ListBox Name="ChatListBox" ItemsSource="{Binding Messages}" Width="764" Height="250" Margin="10 150 10 0">
+        <Label Name="NameChat_" Width="110" Height="40" Margin="0 110 0 0" FontSize="25" HorizontalAlignment="Center"  VerticalAlignment="Top" FontWeight="Bold">Chat</Label>
+        <ListBox Name="ChatListBox" ItemsSource="{Binding Messages}" Width="764" Height="240" Margin="10 110 10 0">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <DockPanel>
@@ -89,6 +99,18 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
+
+        <Button
+            Click="ClearBtn"
+            Width="764"
+            Height="30"
+            Margin="10 0 0 5"
+            Content="Clear Chat"
+            FontSize="20"
+            FontWeight="Bold"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Bottom"
+            ></Button>
         
     </Grid>
 </Window>

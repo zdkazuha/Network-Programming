@@ -1,5 +1,5 @@
 ﻿using Db_Controller.Entities;
-using Db_Controller;
+using DbController;
 using System.Net.Sockets;
 using System.Net;
 using static System.Net.Mime.MediaTypeNames;
@@ -34,6 +34,23 @@ internal class Program
                 if (fullMessage == null)
                     break;
 
+                if (fullMessage.Contains(":Hello server:"))
+                {
+                    var parts1 = fullMessage.Split(':', 2);
+                    if (parts1.Length == 2)
+                    {
+                        string userName1 = parts1[0];
+                        User user1 = context.GetUser(userName1);
+                        if (user1 != null)
+                        {
+                            clientToUser[client] = user1;
+                            Console.WriteLine($"{user1.Username} приєднався до чату.");
+
+                            await sw.WriteLineAsync($"Сервер: Вітаємо, {user1.Username}! Ви приєдналися до чату.");
+                        }
+                    }
+                    continue;
+                }
                 if (fullMessage.Contains(":FILE:"))
                 {
                     await ReceiveAndBroadcastFile(client, fullMessage);
@@ -41,13 +58,17 @@ internal class Program
                 }
                 if(fullMessage.Contains(":Invite:"))
                 {
-                    var parts_ = fullMessage.Split(':');
-                    if (parts_.Length < 4) continue;
-                    string inviterUserName = parts_[0];
-                    string userNameToInvite = parts_[1];
-                    string groupName = parts_[2];
-                    int newGroupId = int.Parse(parts_[3]);
-                    await InviteToGroup(client, userNameToInvite, inviterUserName, newGroupId, groupName);
+                    var parts2 = fullMessage.Split(':',5);
+                    if (parts2.Length < 5) 
+                        continue;
+
+                    string senderName = parts2[0];
+                    string command = parts2[1];
+                    string UserName = parts2[2];
+                    string ChatName = parts2[3];
+                    int ChatId = int.Parse(parts2[4]);
+
+                    await InviteToGroup(senderName, command, UserName, ChatName, ChatId);
                     continue;
                 }
 
@@ -172,40 +193,50 @@ internal class Program
             Console.WriteLine($"ReceiveAndBroadcastFile error: {ex.Message}");
         }
     }
-    public static async Task InviteToGroup(TcpClient inviterClient, string userNameToInvite, string inviterUserName, int newGroupId, string groupName)
+    public static async Task InviteToGroup(string senderName, string command, string UserName, string GroupName, int GroupId)
     {
-        var inviterUser = clientToUser[inviterClient];
-        if (inviterUser == null)
+        var inviterClient = tcpClients.FirstOrDefault(c => clientToUser[c].Username == senderName);
+        if (inviterClient == null)
+        {
+            Console.WriteLine($"Не вдалося знайти клієнта для користувача {senderName}");
+            return;
+        }
+
+
+        var user_ = clientToUser[inviterClient];
+        if (user_ == null)
         {
             Console.WriteLine("Помилка: Користувач не знайдений.");
             return;
         }
 
-        var invitedUser = context.GetUser(userNameToInvite);
+        var invitedUser = context.GetUser(UserName);
         if (invitedUser == null)
         {
-            Console.WriteLine($"Користувача {userNameToInvite} не знайдено.");
+            Console.WriteLine($"Користувача {UserName} не знайдено.");
             return;
         }
 
-        string invitationMessage = $"{inviterUserName}:Invite:{groupName}:{newGroupId}";
+        string Message = $"{senderName}:Invite:{invitedUser.Username}:{GroupName}:{GroupId}";
+        
+        Console.WriteLine(Message);
 
         foreach (var tcpClient in tcpClients)
         {
-            if (clientToUser.TryGetValue(tcpClient, out var clientUser) && clientUser.Username == userNameToInvite)
+            if (clientToUser.TryGetValue(tcpClient, out var clientUser) && clientUser.Username == invitedUser.Username)
             {
                 var invitedStream = tcpClient.GetStream();
                 using var invitedWriter = new StreamWriter(invitedStream, leaveOpen: true) { AutoFlush = true };
-                await invitedWriter.WriteLineAsync(invitationMessage);
+                await invitedWriter.WriteLineAsync(Message);
 
-                Console.WriteLine($"Запрошення надіслано користувачу {userNameToInvite} в групу {groupName} (ID: {newGroupId})");
+                Console.WriteLine($"Запрошення надіслано користувачу {invitedUser.Username} в групу {GroupName} (ID: {GroupId})");
                 break;
             }
         }
 
         var inviterStream = inviterClient.GetStream();
         using var inviterWriter = new StreamWriter(inviterStream, leaveOpen: true) { AutoFlush = true };
-        await inviterWriter.WriteLineAsync($"Ви запросили {userNameToInvite} в групу {groupName} (ID: {newGroupId})");
+        await inviterWriter.WriteLineAsync($"Ви {senderName} запросили корнистувача {invitedUser.Username} в групу {GroupName} (ID: {GroupId})");
     }
 
     private static void Main(string[] args)
@@ -215,23 +246,32 @@ internal class Program
 
         try
         {
+            context = new Db_functional();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Помилка ініціалізації бази даних: {ex.Message}");
+            return;
+        }
+
+        try
+        {
             server.Start();
             Console.WriteLine("Server started! Waiting for connections...");
 
             while (true)
             {
                 TcpClient client = server.AcceptTcpClient();
-                NetworkStream ns = client.GetStream();
-
-                using StreamWriter sw = new StreamWriter(ns, leaveOpen: true) { AutoFlush = true };
+                Console.WriteLine("Новий клієнт підключився");
 
                 if (tcpClients.Count < 5)
                 {
-                    sw.WriteLine("Сервер: Вітаємо на сервері!");
                     Task.Run(() => Start(client));
                 }
                 else
                 {
+                    NetworkStream ns = client.GetStream();
+                    StreamWriter sw = new StreamWriter(ns) { AutoFlush = true };
                     sw.WriteLine("Сервер: Сервер переповнений!");
                     client.Close();
                 }
@@ -242,4 +282,5 @@ internal class Program
             Console.WriteLine($"Server error: {ex.Message}");
         }
     }
+
 }

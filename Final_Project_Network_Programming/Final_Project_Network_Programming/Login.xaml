@@ -8,7 +8,7 @@
         Title="Login" Height="250" Width="335" >
     <Grid>
         <Label Width="230" Height="35" Margin="5 10 0 0" FontSize="18" VerticalAlignment="Top" HorizontalAlignment="Left" >Введіть і`мя користувача ::</Label>
-        <TextBox Name="usernameBox" Width="300" Height="25" Margin="10 45 0 0" Background="#FFEDEAEA" FontSize="17" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Left" VerticalContentAlignment="Bottom" ></TextBox>
+        <TextBox Name="usernameBox" Width="300" Height="25" Margin="10 40 0 0" Background="#FFEDEAEA" FontSize="17" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Left" VerticalContentAlignment="Bottom" ></TextBox>
 
         <Label Width="230" Height="35" Margin="5 70 0 0" FontSize="18"  VerticalAlignment="Top" HorizontalAlignment="Left" >Введіть пароль ::</Label>
         <TextBox Name="passwordBox" Width="300" Height="25" Margin="10 100 0 0" Background="#FFEDEAEA" FontSize="17" HorizontalAlignment="Left" VerticalAlignment="Top" HorizontalContentAlignment="Left" VerticalContentAlignment="Bottom"  ></TextBox>

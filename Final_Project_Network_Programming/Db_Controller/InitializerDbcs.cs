@@ -67,37 +67,34 @@ namespace Db_Controller
                 new Contact
                 {
                     Id = 1,
-                    UserId = 1,
-                    ContactUserId = 2,
-                    CustomName = "Vova123"
+                    UserId = 4,
+                    ContactUserId = 1,
+                    Name = "Oleg",
+                    CustomName = "Oleg123"
                 },
                 new Contact
                 {
                     Id = 2,
-                    UserId = 1,
+                    UserId = 3,
                     ContactUserId = 3,
-                    CustomName = "Vanya123"
+                    Name = "Vova",
+                    CustomName = "Vova123"
                 },
                 new Contact
                 {
                     Id = 3,
                     UserId = 2,
-                    ContactUserId = 1,
-                    CustomName = "Oleg123"
+                    ContactUserId = 2,
+                    Name = "Vanya",
+                    CustomName = "Vanya123"
                 },
                 new Contact
                 {
                     Id = 4,
-                    UserId = 2,
+                    UserId = 1,
                     ContactUserId = 4,
+                    Name = "Sasha",
                     CustomName = "Sasha123"
-                },
-                new Contact
-                {
-                    Id = 5,
-                    UserId = 3,
-                    ContactUserId = 1,
-                    CustomName = "Oleg12"
                 },
             });
         }

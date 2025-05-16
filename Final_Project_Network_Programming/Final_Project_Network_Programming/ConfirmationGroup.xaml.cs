@@ -1,5 +1,6 @@
-﻿using Db_Controller;
+﻿using DbController;
 using Db_Controller.Entities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,28 +23,53 @@ namespace Final_Project_Network_Programming
     /// </summary>
     public partial class ConfirmationGroup : Window
     {
-        private User User;
+        Db_functional context = new Db_functional();
+        public User user;
+
         private string ChatName;
 
-        public static Db_functional context = new Db_functional();
-
-        public ConfirmationGroup(User user, string groupName)
+        public ConfirmationGroup(string SenderUser, User User, string GroupName, int GroupId)
         {
             InitializeComponent();
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
-            GropName.Content = groupName;
-            UserName.Content = user.Username;
+            GroupNameLabel.Content = GroupName;
+            UserNameLabel.Content = SenderUser;
 
-            User = user;
-            ChatName = groupName;
+            user = User;
+            ChatName = GroupName;
+
+            ResultUser = null;
         }
 
         private void YesBtn(object sender, RoutedEventArgs e)
         {
-            context.AddUserToGroup(User, ChatName);
-            MessageBox.Show($"Вітаємо! Ви приєдналися до групи {ChatName}.");
-            this.Close();
+            try
+            {
+                var chat = context.GetPrivateChat(ChatName);
+                var dbUser = context.Users.FirstOrDefault(u => u.Id == user.Id);
+
+                if (dbUser == null)
+                {
+                    MessageBox.Show("Користувача не знайдено.");
+                    return;
+                }
+
+                dbUser = context.RenameUserGroup(dbUser, chat);
+                context.SaveChanges();
+
+                user = dbUser;
+                context.SaveChanges();
+
+                ResultUser = user;
+
+                MessageBox.Show($"Вітаємо! Ви приєдналися до групи {ChatName}.");
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Виникла помилка: {ex.Message}");
+            }
         }
 
         private void NoBtn(object sender, RoutedEventArgs e)
@@ -51,6 +77,7 @@ namespace Final_Project_Network_Programming
             MessageBox.Show("Ви відмовились від запрошення.");
             this.Close();
         }
-    }
 
+        public User ResultUser { get; private set; }
+    }
 }
